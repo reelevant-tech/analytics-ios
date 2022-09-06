@@ -25,10 +25,15 @@ public enum Event {
 /**
     Configuration for the SDK
  */
-public protocol InitConfiguration {
-    var companyId: String { get }
-    var datasourceId: String { get }
-    var currentUrl: String? { get set }
+public struct InitConfiguration {
+    public init (companyId: String, datasourceId: String) {
+        self.companyId = companyId
+        self.datasourceId = datasourceId
+    }
+
+    let companyId: String
+    let datasourceId: String
+    var currentUrl: String?
 }
 
 /**
@@ -97,7 +102,7 @@ public class Analytics {
      */
     public init(configuration: InitConfiguration) {
         self.configuration = configuration
-        
+
         // Init tmp id
         let defaults = UserDefaults.standard
         if defaults.string(forKey: ConfigurationKeys.tmpId) == nil {
@@ -112,11 +117,11 @@ public class Analytics {
             var queue = self.getFailQueue()
             if queue.count > 0 {
                 // Remove element from queue
-                let builtEvent = queue.removeFirst()
+                let data = queue.removeFirst()
                 let defaults = UserDefaults.standard
                 defaults.set(queue, forKey: ConfigurationKeys.queue)
 
-                self.publishEvent(builtEvent: builtEvent)
+                self.send(body: data)
             }
         }
     }
@@ -185,18 +190,18 @@ public class Analytics {
     /**
         Retrieve fail queue from device
      */
-    private func getFailQueue () -> Array<BuiltEvent> {
+    private func getFailQueue () -> Array<Data> {
         let defaults = UserDefaults.standard
-        return (defaults.array(forKey: ConfigurationKeys.queue) as? Array<BuiltEvent>) ?? []
+        return (defaults.array(forKey: ConfigurationKeys.queue) as? Array<Data>) ?? []
     }
     
     /**
         Add element to the current fail queue and save it on the local device
      */
-    private func pushToFailQueue (builtEvent: BuiltEvent) {
+    private func pushToFailQueue (data: Data) {
         let defaults = UserDefaults.standard
         var currentQueue = self.getFailQueue()
-        currentQueue.append(builtEvent)
+        currentQueue.append(data)
         defaults.set(currentQueue, forKey: ConfigurationKeys.queue)
     }
 
@@ -204,37 +209,41 @@ public class Analytics {
         Build and send the event to the network
      */
     private func publishEvent (name: String, payload: Dictionary<String, DataValue>) {
-        let builtEvent = self.buildEventPayload(name: name, payload: payload)
-        return self.publishEvent(builtEvent: builtEvent)
+        do {
+            let builtEvent = self.buildEventPayload(name: name, payload: payload)
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(builtEvent)
+            return self.send(body: data)
+        } catch {
+            os_log("Unable to build event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, error as CVarArg)
+        }
     }
     
     /**
         Send built event to the network
      */
-    private func publishEvent (builtEvent: BuiltEvent) {
-        do {
-            let url = URL(string: "https://collector.reelevant.com/collect/\(self.configuration.datasourceId)/rlvt")!
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            // Avoid being considered as a bot
-            request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36", forHTTPHeaderField: "User-Agent")
-            request.httpMethod = "POST"
-            
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(builtEvent)
-            request.httpBody = data
+    private func send (body: Data) {
+        let url = URL(string: "https://collector.reelevant.com/collect/\(self.configuration.datasourceId)/rlvt")!
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Avoid being considered as a bot
+        request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36", forHTTPHeaderField: "User-Agent")
+        request.httpMethod = "POST"
+        request.httpBody = body
 
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                let httpResponse = response as? HTTPURLResponse
-                if error == nil || httpResponse?.statusCode ?? 500 >= 500 {
-                    self.pushToFailQueue(builtEvent: builtEvent)
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            let httpResponse = response as? HTTPURLResponse
+            if error == nil || httpResponse?.statusCode ?? 500 >= 500 {
+                if error != nil {
+                    os_log("Unable to send event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, error! as CVarArg)
+                } else {
+                    os_log("Unable to send event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, "HTTP status code: \(httpResponse?.statusCode ?? 500)")
                 }
+                self.pushToFailQueue(data: body)
             }
-
-            task.resume()
-        } catch {
-            os_log("Unable to send event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, error as CVarArg)
         }
+
+        task.resume()
     }
     
     /**
