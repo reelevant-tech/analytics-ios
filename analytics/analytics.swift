@@ -20,6 +20,7 @@ public enum Event {
     case category_view(categoryId: String, labels: Dictionary<String, String>)
     case brand_view(brandId: String, labels: Dictionary<String, String>)
     case product_hover(productId: String, labels: Dictionary<String, String>)
+    case custom(name: String, labels: Dictionary<String, String>)
 }
 
 /**
@@ -160,6 +161,8 @@ public class Analytics {
             let payload = convertLabelsToData(labels: labels)
                 .merging(["ids": DataValue.array([id])]) { (current, _) in current }
             self.publishEvent(name: "product_page", payload: payload)
+        case .custom(let name, let labels):
+            self.publishEvent(name: name, payload: convertLabelsToData(labels: labels))
         }
     }
     
