@@ -11,6 +11,7 @@
 		A728903628C7377A00E7D18F /* analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A728902B28C7377A00E7D18F /* analytics.framework */; };
 		A728903B28C7377A00E7D18F /* analyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728903A28C7377A00E7D18F /* analyticsTests.swift */; };
 		A728903C28C7377A00E7D18F /* analytics.h in Headers */ = {isa = PBXBuildFile; fileRef = A728902E28C7377A00E7D18F /* analytics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A728904628C73A8300E7D18F /* analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728904528C73A8300E7D18F /* analytics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		A728902F28C7377A00E7D18F /* analytics.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = analytics.docc; sourceTree = "<group>"; };
 		A728903528C7377A00E7D18F /* analyticsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = analyticsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A728903A28C7377A00E7D18F /* analyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = analyticsTests.swift; sourceTree = "<group>"; };
+		A728904528C73A8300E7D18F /* analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = analytics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			children = (
 				A728902E28C7377A00E7D18F /* analytics.h */,
 				A728902F28C7377A00E7D18F /* analytics.docc */,
+				A728904528C73A8300E7D18F /* analytics.swift */,
 			);
 			path = analytics;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A728904628C73A8300E7D18F /* analytics.swift in Sources */,
 				A728903028C7377A00E7D18F /* analytics.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +398,7 @@
 		A728904328C7377A00E7D18F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -409,6 +414,7 @@
 		A728904428C7377A00E7D18F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
