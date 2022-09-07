@@ -30,30 +30,49 @@ public struct InitConfiguration {
     public init (companyId: String, datasourceId: String) {
         self.companyId = companyId
         self.datasourceId = datasourceId
+        self.endpoint = "https://collector.reelevant.com/collect/\(datasourceId)/rlvt"
+        self.retry = 15 // 15s
     }
 
     let companyId: String
     let datasourceId: String
     var currentUrl: String?
+    var endpoint: String
+    var retry: Double
 }
 
 /**
     Private configuration keys stored on the device
  */
-private struct ConfigurationKeys {
-    static let userId = "user-id"
-    static let tmpId = "tmp-id"
-    static let queue = "queue"
+public enum ConfigurationKeys: String, CaseIterable {
+    case userId
+    case tmpId
+    case queue
 }
 
 /**
     Custom enum to be able to define array of string / string (optional) or number for `data` property
  */
-private enum DataValue: Encodable {
+public enum DataValue: Codable, Equatable {
     
     case array(Array<String>), string(String?), number(Float)
     
-    func encode(to encoder: Encoder) throws {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let v = try? container.decode(Float.self) {
+            self = .number(v)
+            return
+        } else if let v = try? container.decode(Array<String>.self) {
+            self = .array(v)
+            return
+        }
+        
+        let v = try? container.decode(String?.self)
+        self = .string(v)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         
         switch self {
@@ -83,7 +102,7 @@ private func convertLabelsToData (labels: Dictionary<String, String>) -> Diction
 /**
     Sent event schema
  */
-private struct BuiltEvent: Encodable {
+public struct BuiltEvent: Codable {
     let key: String
     let name: String
     let url: String
@@ -106,21 +125,21 @@ public class Analytics {
 
         // Init tmp id
         let defaults = UserDefaults.standard
-        if defaults.string(forKey: ConfigurationKeys.tmpId) == nil {
+        if defaults.string(forKey: ConfigurationKeys.tmpId.rawValue) == nil {
             defaults.set(
                 UIDevice.current.identifierForVendor?.uuidString ?? self.randomIdentifier(),
-                forKey: ConfigurationKeys.tmpId
+                forKey: ConfigurationKeys.tmpId.rawValue
             )
         }
         
         // Empty fail queue every 15s
-        Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { (timer) in
+        Timer.scheduledTimer(withTimeInterval: self.configuration.retry, repeats: true) { (timer) in
             var queue = self.getFailQueue()
             if queue.count > 0 {
                 // Remove element from queue
                 let data = queue.removeFirst()
                 let defaults = UserDefaults.standard
-                defaults.set(queue, forKey: ConfigurationKeys.queue)
+                defaults.set(queue, forKey: ConfigurationKeys.queue.rawValue)
 
                 self.send(body: data)
             }
@@ -171,7 +190,7 @@ public class Analytics {
      */
     public func setUser (userId: String) {
         let defaults = UserDefaults.standard
-        defaults.set(userId, forKey: ConfigurationKeys.userId)
+        defaults.set(userId, forKey: ConfigurationKeys.userId.rawValue)
         self.publishEvent(name: "identify", payload: [String: DataValue]())
     }
     
@@ -195,7 +214,7 @@ public class Analytics {
      */
     private func getFailQueue () -> Array<Data> {
         let defaults = UserDefaults.standard
-        return (defaults.array(forKey: ConfigurationKeys.queue) as? Array<Data>) ?? []
+        return (defaults.array(forKey: ConfigurationKeys.queue.rawValue) as? Array<Data>) ?? []
     }
     
     /**
@@ -205,7 +224,7 @@ public class Analytics {
         let defaults = UserDefaults.standard
         var currentQueue = self.getFailQueue()
         currentQueue.append(data)
-        defaults.set(currentQueue, forKey: ConfigurationKeys.queue)
+        defaults.set(currentQueue, forKey: ConfigurationKeys.queue.rawValue)
     }
 
     /**
@@ -226,7 +245,7 @@ public class Analytics {
         Send built event to the network
      */
     private func send (body: Data) {
-        let url = URL(string: "https://collector.reelevant.com/collect/\(self.configuration.datasourceId)/rlvt")!
+        let url = URL(string: self.configuration.endpoint)!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // Avoid being considered as a bot
@@ -236,7 +255,7 @@ public class Analytics {
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             let httpResponse = response as? HTTPURLResponse
-            if error == nil || httpResponse?.statusCode ?? 500 >= 500 {
+            if error != nil || httpResponse?.statusCode ?? 500 >= 500 {
                 if error != nil {
                     os_log("Unable to send event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, error! as CVarArg)
                 } else {
@@ -258,8 +277,8 @@ public class Analytics {
             key: self.configuration.companyId,
             name: name,
             url: self.configuration.currentUrl ?? "unknown",
-            tmpId: defaults.string(forKey: ConfigurationKeys.tmpId)!,
-            clientId: defaults.string(forKey: ConfigurationKeys.userId),
+            tmpId: defaults.string(forKey: ConfigurationKeys.tmpId.rawValue)!,
+            clientId: defaults.string(forKey: ConfigurationKeys.userId.rawValue),
             data: payload,
             eventId: self.randomIdentifier(),
             v: 1,

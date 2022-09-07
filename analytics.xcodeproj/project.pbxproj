@@ -8,16 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		A728903028C7377A00E7D18F /* analytics.docc in Sources */ = {isa = PBXBuildFile; fileRef = A728902F28C7377A00E7D18F /* analytics.docc */; };
-		A728903628C7377A00E7D18F /* analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A728902B28C7377A00E7D18F /* analytics.framework */; };
+		A728903628C7377A00E7D18F /* ReelevantAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A728902B28C7377A00E7D18F /* ReelevantAnalytics.framework */; };
 		A728903B28C7377A00E7D18F /* analyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728903A28C7377A00E7D18F /* analyticsTests.swift */; };
 		A728903C28C7377A00E7D18F /* analytics.h in Headers */ = {isa = PBXBuildFile; fileRef = A728902E28C7377A00E7D18F /* analytics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A728904728C795A100E7D18F /* analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728904528C73A8300E7D18F /* analytics.swift */; };
-		A728907328C7975C00E7D18F /* test_appApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728907228C7975C00E7D18F /* test_appApp.swift */; };
-		A728907528C7975C00E7D18F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A728907428C7975C00E7D18F /* ContentView.swift */; };
-		A728907728C7975D00E7D18F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A728907628C7975D00E7D18F /* Assets.xcassets */; };
-		A728907A28C7975D00E7D18F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A728907928C7975D00E7D18F /* Preview Assets.xcassets */; };
-		A75E751A28C7982F007ACB5F /* analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A728902B28C7377A00E7D18F /* analytics.framework */; };
-		A75E751B28C7982F007ACB5F /* analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A728902B28C7377A00E7D18F /* analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A75E752128C88EBC007ACB5F /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = A75E752028C88EBC007ACB5F /* Swifter */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,41 +23,15 @@
 			remoteGlobalIDString = A728902A28C7377A00E7D18F;
 			remoteInfo = analytics;
 		};
-		A75E751C28C7982F007ACB5F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A728902228C7377A00E7D18F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A728902A28C7377A00E7D18F;
-			remoteInfo = analytics;
-		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		A75E751E28C7982F007ACB5F /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A75E751B28C7982F007ACB5F /* analytics.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		A728902B28C7377A00E7D18F /* analytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = analytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A728902B28C7377A00E7D18F /* ReelevantAnalytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReelevantAnalytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A728902E28C7377A00E7D18F /* analytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = analytics.h; sourceTree = "<group>"; };
 		A728902F28C7377A00E7D18F /* analytics.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = analytics.docc; sourceTree = "<group>"; };
 		A728903528C7377A00E7D18F /* analyticsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = analyticsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A728903A28C7377A00E7D18F /* analyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = analyticsTests.swift; sourceTree = "<group>"; };
 		A728904528C73A8300E7D18F /* analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = analytics.swift; sourceTree = "<group>"; };
-		A728907028C7975C00E7D18F /* test-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "test-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A728907228C7975C00E7D18F /* test_appApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test_appApp.swift; sourceTree = "<group>"; };
-		A728907428C7975C00E7D18F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A728907628C7975D00E7D18F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A728907928C7975D00E7D18F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A75E752128C88EBC007ACB5F /* Swifter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,15 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A728903628C7377A00E7D18F /* analytics.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A728906D28C7975C00E7D18F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A75E751A28C7982F007ACB5F /* analytics.framework in Frameworks */,
+				A728903628C7377A00E7D18F /* ReelevantAnalytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +59,6 @@
 			children = (
 				A728902D28C7377A00E7D18F /* analytics */,
 				A728903928C7377A00E7D18F /* analyticsTests */,
-				A728907128C7975C00E7D18F /* test-app */,
 				A728902C28C7377A00E7D18F /* Products */,
 				A75E751928C7982F007ACB5F /* Frameworks */,
 			);
@@ -106,9 +67,8 @@
 		A728902C28C7377A00E7D18F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A728902B28C7377A00E7D18F /* analytics.framework */,
+				A728902B28C7377A00E7D18F /* ReelevantAnalytics.framework */,
 				A728903528C7377A00E7D18F /* analyticsTests.xctest */,
-				A728907028C7975C00E7D18F /* test-app.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,25 +89,6 @@
 				A728903A28C7377A00E7D18F /* analyticsTests.swift */,
 			);
 			path = analyticsTests;
-			sourceTree = "<group>";
-		};
-		A728907128C7975C00E7D18F /* test-app */ = {
-			isa = PBXGroup;
-			children = (
-				A728907228C7975C00E7D18F /* test_appApp.swift */,
-				A728907428C7975C00E7D18F /* ContentView.swift */,
-				A728907628C7975D00E7D18F /* Assets.xcassets */,
-				A728907828C7975D00E7D18F /* Preview Content */,
-			);
-			path = "test-app";
-			sourceTree = "<group>";
-		};
-		A728907828C7975D00E7D18F /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				A728907928C7975D00E7D18F /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		A75E751928C7982F007ACB5F /* Frameworks */ = {
@@ -185,8 +126,11 @@
 			dependencies = (
 			);
 			name = analytics;
+			packageProductDependencies = (
+				A75E752028C88EBC007ACB5F /* Swifter */,
+			);
 			productName = analytics;
-			productReference = A728902B28C7377A00E7D18F /* analytics.framework */;
+			productReference = A728902B28C7377A00E7D18F /* ReelevantAnalytics.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A728903428C7377A00E7D18F /* analyticsTests */ = {
@@ -207,25 +151,6 @@
 			productReference = A728903528C7377A00E7D18F /* analyticsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A728906F28C7975C00E7D18F /* test-app */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A728907B28C7975D00E7D18F /* Build configuration list for PBXNativeTarget "test-app" */;
-			buildPhases = (
-				A728906C28C7975C00E7D18F /* Sources */,
-				A728906D28C7975C00E7D18F /* Frameworks */,
-				A728906E28C7975C00E7D18F /* Resources */,
-				A75E751E28C7982F007ACB5F /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A75E751D28C7982F007ACB5F /* PBXTargetDependency */,
-			);
-			name = "test-app";
-			productName = "test-app";
-			productReference = A728907028C7975C00E7D18F /* test-app.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -242,9 +167,6 @@
 					A728903428C7377A00E7D18F = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
-					A728906F28C7975C00E7D18F = {
-						CreatedOnToolsVersion = 13.4.1;
-					};
 				};
 			};
 			buildConfigurationList = A728902528C7377A00E7D18F /* Build configuration list for PBXProject "analytics" */;
@@ -256,13 +178,15 @@
 				Base,
 			);
 			mainGroup = A728902128C7377A00E7D18F;
+			packageReferences = (
+				A75E751F28C88EBC007ACB5F /* XCRemoteSwiftPackageReference "swifter" */,
+			);
 			productRefGroup = A728902C28C7377A00E7D18F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				A728902A28C7377A00E7D18F /* analytics */,
 				A728903428C7377A00E7D18F /* analyticsTests */,
-				A728906F28C7975C00E7D18F /* test-app */,
 			);
 		};
 /* End PBXProject section */
@@ -279,15 +203,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A728906E28C7975C00E7D18F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A728907A28C7975D00E7D18F /* Preview Assets.xcassets in Resources */,
-				A728907728C7975D00E7D18F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,15 +226,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A728906C28C7975C00E7D18F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A728907528C7975C00E7D18F /* ContentView.swift in Sources */,
-				A728907328C7975C00E7D18F /* test_appApp.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -327,11 +233,6 @@
 			isa = PBXTargetDependency;
 			target = A728902A28C7377A00E7D18F /* analytics */;
 			targetProxy = A728903728C7377A00E7D18F /* PBXContainerItemProxy */;
-		};
-		A75E751D28C7982F007ACB5F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A728902A28C7377A00E7D18F /* analytics */;
-			targetProxy = A75E751C28C7982F007ACB5F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -477,7 +378,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = reelevant.com.analytics;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = ReelevantAnalytics;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -506,7 +407,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = reelevant.com.analytics;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = ReelevantAnalytics;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -546,62 +447,6 @@
 			};
 			name = Release;
 		};
-		A728907C28C7975D00E7D18F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"test-app/Preview Content\"";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "reelevant.com.test-app";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		A728907D28C7975D00E7D18F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"test-app/Preview Content\"";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "reelevant.com.test-app";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -632,16 +477,26 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A728907B28C7975D00E7D18F /* Build configuration list for PBXNativeTarget "test-app" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A728907C28C7975D00E7D18F /* Debug */,
-				A728907D28C7975D00E7D18F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A75E751F28C88EBC007ACB5F /* XCRemoteSwiftPackageReference "swifter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/httpswift/swifter";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A75E752028C88EBC007ACB5F /* Swifter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A75E751F28C88EBC007ACB5F /* XCRemoteSwiftPackageReference "swifter" */;
+			productName = Swifter;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A728902228C7377A00E7D18F /* Project object */;
 }
