@@ -6,27 +6,27 @@
 //
 
 import XCTest
-@testable import analytics
+@testable import ReelevantAnalytics
 import Swifter
 
-class analyticsTests: XCTestCase {
+final class ReelevantAnalyticsTests: XCTestCase {
 
     override func setUpWithError() throws {
         // noop
     }
 
     override func tearDownWithError() throws {
-        analytics.ConfigurationKeys.allCases.forEach { key in
+        ReelevantAnalytics.ConfigurationKeys.allCases.forEach { key in
             UserDefaults.standard.removeObject(forKey: key.rawValue)
         }
     }
 
     func testSendPageViewAndProductPage() throws {
         // Init the SDK
-        var config = analytics.InitConfiguration(companyId: "foo", datasourceId: "bar")
+        var config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
         config.endpoint = "http://localhost:9080/receive"
-        let sdk = analytics.Analytics(configuration: config)
-        let event = analytics.Event.page_view(labels: [:])
+        let sdk = ReelevantAnalytics.SDK(configuration: config)
+        let event = ReelevantAnalytics.Event.page_view(labels: [:])
         
         // Create a local HTTP server to receive events
         let server = HttpServer()
@@ -48,7 +48,7 @@ class analyticsTests: XCTestCase {
         
         var data = Data(receivedRequest!.body)
         var decoder = JSONDecoder()
-        var receivedEvent = try decoder.decode(analytics.BuiltEvent.self, from: data)
+        var receivedEvent = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
         XCTAssertEqual(receivedEvent.name, "page_view")
         XCTAssertEqual(receivedEvent.key, "foo")
         XCTAssertEqual(receivedEvent.url, "unknown")
@@ -63,21 +63,21 @@ class analyticsTests: XCTestCase {
         // Send a product_page event to check if we have same tmpId
         exp = expectation(description: "Receiving a second request")
         // Wait for a request and then assert
-        let secondEvent = analytics.Event.product_page(ids: ["my-product-id"], labels: ["lang": "en_US"])
+        let secondEvent = ReelevantAnalytics.Event.product_page(ids: ["my-product-id"], labels: ["lang": "en_US"])
         sdk.setCurrentURL(url: "https://reelevant.com/my-product-id")
         sdk.send(event: secondEvent)
         waitForExpectations(timeout: 3)
         
         data = Data(receivedRequest!.body)
         decoder = JSONDecoder()
-        receivedEvent = try decoder.decode(analytics.BuiltEvent.self, from: data)
+        receivedEvent = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
         XCTAssertEqual(receivedEvent.name, "product_page")
         XCTAssertEqual(receivedEvent.key, "foo")
         XCTAssertEqual(receivedEvent.url, "https://reelevant.com/my-product-id")
         XCTAssertEqual(receivedEvent.v, 1)
         XCTAssertEqual(receivedEvent.data, [
-            "lang": analytics.DataValue.string("en_US"),
-            "ids": analytics.DataValue.array(["my-product-id"])
+            "lang": ReelevantAnalytics.DataValue.string("en_US"),
+            "ids": ReelevantAnalytics.DataValue.array(["my-product-id"])
         ])
         XCTAssertNil(receivedEvent.clientId)
         XCTAssertEqual(receivedEvent.tmpId, userTmpId)
@@ -89,11 +89,11 @@ class analyticsTests: XCTestCase {
     
     func testRetry() throws {
         // Init the SDK
-        var config = analytics.InitConfiguration(companyId: "foo", datasourceId: "bar")
+        var config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
         config.endpoint = "http://localhost:9080/receive"
         config.retry = 1 // retry after 1s
-        let sdk = analytics.Analytics(configuration: config)
-        let event = analytics.Event.page_view(labels: [:])
+        let sdk = ReelevantAnalytics.SDK(configuration: config)
+        let event = ReelevantAnalytics.Event.page_view(labels: [:])
         
         // Create a local HTTP server to receive events
         let server = HttpServer()
@@ -104,7 +104,7 @@ class analyticsTests: XCTestCase {
             let isFirstReq = receivedRequest == nil
             receivedRequest = request
             if isFirstReq {
-                return .internalServerError
+                return .internalServerError(.none)
             }
             exp.fulfill()
             return .ok(.text("OK"))
@@ -119,7 +119,7 @@ class analyticsTests: XCTestCase {
         
         let data = Data(receivedRequest!.body)
         let decoder = JSONDecoder()
-        let receivedEvent = try decoder.decode(analytics.BuiltEvent.self, from: data)
+        let receivedEvent = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
         XCTAssertEqual(receivedEvent.name, "page_view")
         
         server.stop()
