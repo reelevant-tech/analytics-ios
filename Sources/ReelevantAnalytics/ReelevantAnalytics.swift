@@ -116,7 +116,7 @@ public struct ReelevantAnalytics {
         let timestamp: Int64
     }
 
-    @available(macOS 10.12, *)
+    @available(macOS 10.12, iOS 10.0, *)
     public class SDK {
         private var configuration: Configuration
         
