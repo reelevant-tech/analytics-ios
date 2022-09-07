@@ -63,7 +63,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
         // Send a product_page event to check if we have same tmpId
         exp = expectation(description: "Receiving a second request")
         // Wait for a request and then assert
-        let secondEvent = ReelevantAnalytics.Event.product_page(ids: ["my-product-id"], labels: ["lang": "en_US"])
+        let secondEvent = ReelevantAnalytics.Event.product_page(productId: "my-product-id", labels: ["lang": "en_US"])
         sdk.setCurrentURL(url: "https://reelevant.com/my-product-id")
         sdk.send(event: secondEvent)
         waitForExpectations(timeout: 3)

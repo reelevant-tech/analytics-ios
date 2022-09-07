@@ -16,7 +16,7 @@ public struct ReelevantAnalytics {
      */
     public enum Event {
         case page_view(labels: Dictionary<String, String>)
-        case product_page(ids: Array<String>, labels: Dictionary<String, String>)
+        case product_page(productId: String, labels: Dictionary<String, String>)
         case add_cart(ids: Array<String>, labels: Dictionary<String, String>)
         case purchase(ids: Array<String>, totalAmount: Float, labels: Dictionary<String, String>, transId: String?)
         case category_view(categoryId: String, labels: Dictionary<String, String>)
@@ -163,8 +163,6 @@ public struct ReelevantAnalytics {
             switch event {
             case .page_view(let labels):
                 self.publishEvent(name: "page_view", payload: convertLabelsToData(labels: labels))
-            case .product_page(let ids, let labels):
-                fallthrough
             case .add_cart(let ids, let labels):
                 let payload = convertLabelsToData(labels: labels)
                     .merging(["ids": DataValue.array(ids)]) { (current, _) in current }
@@ -177,6 +175,8 @@ public struct ReelevantAnalytics {
                         "transId": DataValue.string(transId)
                     ]) { (current, _) in current }
                 self.publishEvent(name: "product_page", payload: payload)
+            case .product_page(let id, let labels):
+                fallthrough
             case .category_view(let id, let labels):
                 fallthrough
             case .brand_view(let id, let labels):
