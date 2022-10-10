@@ -200,8 +200,11 @@ public struct ReelevantAnalytics {
          */
         public func setUser (userId: String) {
             let defaults = UserDefaults.standard
-            defaults.set(userId, forKey: ConfigurationKeys.userId.rawValue)
-            self.publishEvent(name: "identify", payload: [String: DataValue]())
+            let currentValue = defaults.string(forKey: ConfigurationKeys.userId.rawValue)
+            if currentValue != userId {
+                defaults.set(userId, forKey: ConfigurationKeys.userId.rawValue)
+                self.publishEvent(name: "identify", payload: [String: DataValue]())
+            }
         }
         
         /**

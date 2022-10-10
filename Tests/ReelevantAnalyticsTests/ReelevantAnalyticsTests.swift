@@ -59,8 +59,14 @@ final class ReelevantAnalyticsTests: XCTestCase {
         let userTmpId = receivedEvent.tmpId
         XCTAssertNotNil(receivedEvent.eventId)
         let firstEventId = receivedEvent.eventId
+
+        // Identify
+        exp = expectation(description: "Receiving identify request")
+        sdk.setUser(userId: "my-user")
+        waitForExpectations(timeout: 3)
+        // Ensure we doesn't send a 2nd req with the same user
+        sdk.setUser(userId: "my-user")
         
-        // Send a product_page event to check if we have same tmpId
         exp = expectation(description: "Receiving a second request")
         // Wait for a request and then assert
         let secondEvent = ReelevantAnalytics.Event.product_page(productId: "my-product-id", labels: ["lang": "en_US"])
@@ -79,7 +85,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
             "lang": ReelevantAnalytics.DataValue.string("en_US"),
             "ids": ReelevantAnalytics.DataValue.array(["my-product-id"])
         ])
-        XCTAssertNil(receivedEvent.clientId)
+        XCTAssertEqual(receivedEvent.clientId, "my-user")
         XCTAssertEqual(receivedEvent.tmpId, userTmpId)
         XCTAssertNotNil(receivedEvent.eventId)
         XCTAssertNotEqual(receivedEvent.tmpId, firstEventId)
