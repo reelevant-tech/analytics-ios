@@ -33,7 +33,7 @@ public struct ReelevantAnalytics {
             self.companyId = companyId
             self.datasourceId = datasourceId
             self.endpoint = "https://collector.reelevant.com/collect/\(datasourceId)/rlvt"
-            self.retry = 15 // 15s
+            self.retry = 60 // 1m
         }
 
         let companyId: String
