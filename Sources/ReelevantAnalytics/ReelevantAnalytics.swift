@@ -151,7 +151,13 @@ public struct ReelevantAnalytics {
                     let defaults = UserDefaults.standard
                     defaults.set(queue, forKey: ConfigurationKeys.queue.rawValue)
 
-                    self.send(body: data)
+                    // We don't send the event if he is older than 15min
+                    let decoder = JSONDecoder()
+                    let event = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
+                    let timeSinceEvent = Int64(Date().timeIntervalSince1970 * 1000) - event.timestamp
+                    if timeSinceEvent <= 15 * 60 * 1000 {
+                        self.send(body: data)
+                    }
                 }
             }
         }
