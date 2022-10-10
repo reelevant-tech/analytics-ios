@@ -154,10 +154,14 @@ public struct ReelevantAnalytics {
 
                     // We don't send the event if he is older than 15min
                     let decoder = JSONDecoder()
-                    let event = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
-                    let timeSinceEvent = Int64(Date().timeIntervalSince1970 * 1000) - event.timestamp
-                    if timeSinceEvent <= 15 * 60 * 1000 {
-                        self.send(body: data)
+                    do {
+                        let event = try decoder.decode(ReelevantAnalytics.BuiltEvent.self, from: data)
+                        let timeSinceEvent = Int64(Date().timeIntervalSince1970 * 1000) - event.timestamp
+                        if timeSinceEvent <= 15 * 60 * 1000 {
+                            self.send(body: data)
+                        }
+                    } catch {
+                         os_log("Unable to send queued event from Reelevant analytics SDK: %@", log: OSLog.default, type: .error, error as CVarArg)
                     }
                 }
             }
