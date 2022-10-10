@@ -5,6 +5,7 @@
 //  Created by Valentin  on 06/09/2022.
 //
 import Foundation
+import WebKit
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -268,7 +269,7 @@ public struct ReelevantAnalytics {
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             // Avoid being considered as a bot
-            request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36", forHTTPHeaderField: "User-Agent")
+            request.setValue(WKWebView().value(forKey: "userAgent"), forHTTPHeaderField: "User-Agent")
             request.httpMethod = "POST"
             request.httpBody = body
 
