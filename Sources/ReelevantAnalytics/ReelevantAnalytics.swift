@@ -23,6 +23,11 @@ public struct ReelevantAnalytics {
         case brand_view(brandId: String, labels: Dictionary<String, String>)
         case product_hover(productId: String, labels: Dictionary<String, String>)
         case custom(name: String, labels: Dictionary<String, String>)
+
+        // source: https://gist.github.com/qmchenry/a3b317a8cc47bd06aeabc0ddf95ba113
+        var caseName: String {
+            return Mirror(reflecting: self).children.first?.label ?? String(describing: self)
+        }
     }
 
     /**
@@ -166,7 +171,7 @@ public struct ReelevantAnalytics {
             case .add_cart(let ids, let labels):
                 let payload = convertLabelsToData(labels: labels)
                     .merging(["ids": DataValue.array(ids)]) { (current, _) in current }
-                self.publishEvent(name: "product_page", payload: payload)
+                self.publishEvent(name: "add_cart", payload: payload)
             case .purchase(let ids, let totalAmount, let labels, let transId):
                 let payload = convertLabelsToData(labels: labels)
                     .merging([
@@ -174,7 +179,7 @@ public struct ReelevantAnalytics {
                         "value": DataValue.number(totalAmount),
                         "transId": DataValue.string(transId)
                     ]) { (current, _) in current }
-                self.publishEvent(name: "product_page", payload: payload)
+                self.publishEvent(name: "purchase", payload: payload)
             case .product_page(let id, let labels):
                 fallthrough
             case .category_view(let id, let labels):
@@ -184,7 +189,7 @@ public struct ReelevantAnalytics {
             case .product_hover(let id, let labels):
                 let payload = convertLabelsToData(labels: labels)
                     .merging(["ids": DataValue.array([id])]) { (current, _) in current }
-                self.publishEvent(name: "product_page", payload: payload)
+                self.publishEvent(name: event.caseName, payload: payload)
             case .custom(let name, let labels):
                 self.publishEvent(name: name, payload: convertLabelsToData(labels: labels))
             }
