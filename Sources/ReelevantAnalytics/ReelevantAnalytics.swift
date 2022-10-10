@@ -5,7 +5,7 @@
 //  Created by Valentin  on 06/09/2022.
 //
 import Foundation
-#if !os(macOS)
+#if canImport(UIKit)
 import UIKit
 #endif
 import OSLog
@@ -129,7 +129,7 @@ public struct ReelevantAnalytics {
             // Init tmp id
             let defaults = UserDefaults.standard
             if defaults.string(forKey: ConfigurationKeys.tmpId.rawValue) == nil {
-                #if !os(macOS)
+                #if canImport(UIKit)
                 let tmpId = UIDevice.current.identifierForVendor?.uuidString ?? self.randomIdentifier()
                 #else
                 let tmpId = self.randomIdentifier()
