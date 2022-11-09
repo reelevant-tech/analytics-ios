@@ -163,7 +163,13 @@ public class ReelevantAnalytics {
         }
         
         public static func == (left: DataValue, right: DataValue) -> Bool {
-            return left.stringValue == right.stringValue && left.floatValue == right.floatValue && left.arrayValue == right.arrayValue
+            return
+                left.stringValue == right.stringValue && // same string or nil
+                left.floatValue == right.floatValue && // same number or nil
+                (
+                    (left.arrayValue == nil && right.arrayValue == nil) || // nil arrays
+                    (left.arrayValue != nil && right.arrayValue != nil && left.arrayValue!.elementsEqual(right.arrayValue!)) // or same elements
+                )
         }
     }
 

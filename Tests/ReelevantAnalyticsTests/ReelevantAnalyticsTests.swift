@@ -79,10 +79,9 @@ final class ReelevantAnalyticsTests: XCTestCase {
         XCTAssertEqual(receivedEvent.key, "foo")
         XCTAssertEqual(receivedEvent.url, "https://reelevant.com/my-product-id")
         XCTAssertEqual(receivedEvent.v, 1)
-        XCTAssertEqual(receivedEvent.data, [
-            "lang": ReelevantAnalytics.DataValue.init(string: "en_US"),
-            "ids": ReelevantAnalytics.DataValue.init(array: ["my-product-id"])
-        ])
+        XCTAssert(receivedEvent.data.keys.sorted().elementsEqual(["lang", "ids"].sorted()), receivedEvent.data.keys.joined(separator: ","))
+        XCTAssert(receivedEvent.data["lang"]! == ReelevantAnalytics.DataValue.init(string: "en_US"))
+        XCTAssert(receivedEvent.data["ids"]! == ReelevantAnalytics.DataValue.init(array: ["my-product-id"]))
         XCTAssertEqual(receivedEvent.clientId, "my-user")
         XCTAssertEqual(receivedEvent.tmpId, userTmpId)
         XCTAssertNotNil(receivedEvent.eventId)
