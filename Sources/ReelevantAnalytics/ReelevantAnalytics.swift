@@ -16,7 +16,8 @@ public class ReelevantAnalytics {
     /**
         Used to build `Event` which could be used in `send()` method
      */
-    public class EventBuilder {
+    @objc
+    public class EventBuilder: NSObject {
         public static func page_view(labels: Dictionary<String, String>) -> Event {
             return Event.init(name: "page_view", payload: convertLabelsToData(labels: labels))
         }
@@ -69,7 +70,8 @@ public class ReelevantAnalytics {
     /**
         Event built from the `EventBuilder`
      */
-    public class Event {
+    @objc
+    public class Event: NSObject {
         let name: String
         let payload: Dictionary<String, DataValue>
         
@@ -82,7 +84,8 @@ public class ReelevantAnalytics {
     /**
         Configuration for the SDK
      */
-    public class Configuration {
+    @objc
+    public class Configuration: NSObject {
         public init (companyId: String, datasourceId: String) {
             self.companyId = companyId
             self.datasourceId = datasourceId
@@ -104,6 +107,7 @@ public class ReelevantAnalytics {
     private static let TemporaryUserIdConfigurationKey = "tmp-id"
     private static let FailQueueConfigurationKey = "fail-queue"
     
+    @objc
     public static func clearStorage () {
         UserDefaults.standard.removeObject(forKey: ReelevantAnalytics.UserIdConfigurationKey)
         UserDefaults.standard.removeObject(forKey: ReelevantAnalytics.TemporaryUserIdConfigurationKey)
@@ -113,7 +117,8 @@ public class ReelevantAnalytics {
     /**
         Custom class to be able to define array of string / string (optional) or number for `data` property
      */
-    public class DataValue: Codable, Equatable {
+    @objc
+    public class DataValue: NSObject, Codable {
         private var arrayValue: Array<String>? = nil
         private var stringValue: String? = nil
         private var floatValue: Float? = nil
@@ -175,7 +180,8 @@ public class ReelevantAnalytics {
         Sent event schema
         note: it could be a struct but since we need Objective-C interoperability
      */
-    public class BuiltEvent: Codable {
+    @objc
+    public class BuiltEvent: NSObject, Codable {
         let key: String
         let name: String
         let url: String
@@ -208,7 +214,8 @@ public class ReelevantAnalytics {
     }
 
     @available(macOS 10.12, iOS 10.0, *)
-    public class SDK {
+    @objcMembers
+    public class SDK: NSObject {
         private var configuration: Configuration
         
         /**
@@ -216,6 +223,7 @@ public class ReelevantAnalytics {
          */
         public required init(configuration: Configuration) {
             self.configuration = configuration
+            super.init()
 
             // Init tmp id
             let defaults = UserDefaults.standard
