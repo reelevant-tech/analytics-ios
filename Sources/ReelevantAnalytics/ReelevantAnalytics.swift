@@ -12,22 +12,70 @@ import UIKit
 import OSLog
 
 public class ReelevantAnalytics {
+    
     /**
-        Defined events
+        Used to build `Event` which could be used in `send()` method
      */
-    public enum Event {
-        case page_view(labels: Dictionary<String, String>)
-        case product_page(productId: String, labels: Dictionary<String, String>)
-        case add_cart(ids: Array<String>, labels: Dictionary<String, String>)
-        case purchase(ids: Array<String>, totalAmount: Float, labels: Dictionary<String, String>, transId: String?)
-        case category_view(categoryId: String, labels: Dictionary<String, String>)
-        case brand_view(brandId: String, labels: Dictionary<String, String>)
-        case product_hover(productId: String, labels: Dictionary<String, String>)
-        case custom(name: String, labels: Dictionary<String, String>)
-
-        // source: https://gist.github.com/qmchenry/a3b317a8cc47bd06aeabc0ddf95ba113
-        var caseName: String {
-            return Mirror(reflecting: self).children.first?.label ?? String(describing: self)
+    public class EventBuilder {
+        public static func page_view(labels: Dictionary<String, String>) -> Event {
+            return Event.init(name: "page_view", payload: convertLabelsToData(labels: labels))
+        }
+        
+        public static func product_page(productId: String, labels: Dictionary<String, String>) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging(["ids": DataValue.init(array: [productId])]) { (current, _) in current }
+            return Event.init(name: "product_page", payload: payload)
+        }
+        
+        public static func add_cart(ids: Array<String>, labels: Dictionary<String, String>) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging(["ids": DataValue.init(array: ids)]) { (current, _) in current }
+            return Event.init(name: "add_cart", payload: payload)
+        }
+        
+        public static func purchase(ids: Array<String>, totalAmount: Float, labels: Dictionary<String, String>, transId: String?) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging([
+                    "ids": DataValue.init(array: ids),
+                    "value": DataValue.init(number: totalAmount),
+                    "transId": DataValue.init(string: transId)
+                ]) { (current, _) in current }
+            return Event.init(name: "purchase", payload: payload)
+        }
+        
+        public static func category_view(categoryId: String, labels: Dictionary<String, String>) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging(["ids": DataValue.init(array: [categoryId])]) { (current, _) in current }
+            return Event.init(name: "product_page", payload: payload)
+        }
+        
+        public static func brand_view(brandId: String, labels: Dictionary<String, String>) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging(["ids": DataValue.init(array: [brandId])]) { (current, _) in current }
+            return Event.init(name: "product_page", payload: payload)
+        }
+        
+        public static func product_hover(productId: String, labels: Dictionary<String, String>) -> Event {
+            let payload = convertLabelsToData(labels: labels)
+                .merging(["ids": DataValue.init(array: [productId])]) { (current, _) in current }
+            return Event.init(name: "product_page", payload: payload)
+        }
+        
+        public static func custom(name: String, labels: Dictionary<String, String>) -> Event {
+            return Event.init(name: name, payload: convertLabelsToData(labels: labels))
+        }
+    }
+    
+    /**
+        Event built from the `EventBuilder`
+     */
+    public class Event {
+        let name: String
+        let payload: Dictionary<String, DataValue>
+        
+        public init (name: String, payload: Dictionary<String, DataValue>) {
+            self.name = name
+            self.payload = payload
         }
     }
 
@@ -52,49 +100,65 @@ public class ReelevantAnalytics {
     /**
         Private configuration keys stored on the device
      */
-    public enum ConfigurationKeys: String, CaseIterable {
-        case userId
-        case tmpId
-        case queue
+    private static let UserIdConfigurationKey = "user-id"
+    private static let TemporaryUserIdConfigurationKey = "tmp-id"
+    private static let FailQueueConfigurationKey = "fail-queue"
+    
+    public static func clearStorage () {
+        UserDefaults.standard.removeObject(forKey: ReelevantAnalytics.UserIdConfigurationKey)
+        UserDefaults.standard.removeObject(forKey: ReelevantAnalytics.TemporaryUserIdConfigurationKey)
+        UserDefaults.standard.removeObject(forKey: ReelevantAnalytics.FailQueueConfigurationKey)
     }
 
     /**
-        Custom enum to be able to define array of string / string (optional) or number for `data` property
+        Custom class to be able to define array of string / string (optional) or number for `data` property
      */
-    public enum DataValue: Codable, Equatable {
+    public class DataValue: Codable, Equatable {
+        private var arrayValue: Array<String>? = nil
+        private var stringValue: String? = nil
+        private var floatValue: Float? = nil
         
-        case array(Array<String>), string(String?), number(Float)
+        public required init (array: Array<String>) {
+            self.arrayValue = array
+        }
+        public required init (string: String?) {
+            self.stringValue = string
+        }
+        public required init (number: Float) {
+            self.floatValue = number
+        }
         
-        public init(from decoder: Decoder) throws {
+        public required init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             
             if let v = try? container.decode(Float.self) {
-                self = .number(v)
+                self.floatValue = v
                 return
             } else if let v = try? container.decode(Array<String>.self) {
-                self = .array(v)
+                self.arrayValue = v
                 return
             }
             
             let v = try? container.decode(String?.self)
-            self = .string(v)
+            self.stringValue = v
         }
         
         public func encode(to encoder: Encoder) throws {
             var container = encoder.singleValueContainer()
             
-            switch self {
-            case .array(let array):
-                try container.encode(array)
-            case .string(let optional):
-                if optional == nil {
-                    try container.encodeNil()
-                } else {
-                    try container.encode(optional)
-                }
-            case .number(let float):
-                try container.encode(float)
+            if (self.arrayValue != nil) {
+                try container.encode(self.arrayValue)
+            } else if (self.floatValue != nil) {
+                try container.encode(self.floatValue)
+            } else if (self.stringValue != nil) {
+                try container.encode(self.stringValue)
+            } else {
+                try container.encodeNil()
             }
+        }
+        
+        public static func == (left: DataValue, right: DataValue) -> Bool {
+            return left.stringValue == right.stringValue && left.floatValue == right.floatValue && left.arrayValue == right.arrayValue
         }
     }
 
@@ -103,7 +167,7 @@ public class ReelevantAnalytics {
      */
     static private func convertLabelsToData (labels: Dictionary<String, String>) -> Dictionary<String, DataValue> {
         return labels.mapValues { value in
-            return DataValue.string(value)
+            return DataValue.init(string: value)
         }
     }
 
@@ -150,18 +214,18 @@ public class ReelevantAnalytics {
         /**
             Create the SDK instance
          */
-        public init(configuration: Configuration) {
+        public required init(configuration: Configuration) {
             self.configuration = configuration
 
             // Init tmp id
             let defaults = UserDefaults.standard
-            if defaults.string(forKey: ConfigurationKeys.tmpId.rawValue) == nil {
+            if defaults.string(forKey: ReelevantAnalytics.TemporaryUserIdConfigurationKey) == nil {
                 #if canImport(UIKit)
                 let tmpId = UIDevice.current.identifierForVendor?.uuidString ?? self.randomIdentifier()
                 #else
                 let tmpId = self.randomIdentifier()
                 #endif
-                defaults.set(tmpId, forKey: ConfigurationKeys.tmpId.rawValue)
+                defaults.set(tmpId, forKey: ReelevantAnalytics.TemporaryUserIdConfigurationKey)
             }
             
             // Empty fail queue every 15s
@@ -171,7 +235,7 @@ public class ReelevantAnalytics {
                     // Remove element from queue
                     let data = queue.removeFirst()
                     let defaults = UserDefaults.standard
-                    defaults.set(queue, forKey: ConfigurationKeys.queue.rawValue)
+                    defaults.set(queue, forKey: ReelevantAnalytics.FailQueueConfigurationKey)
 
                     // We don't send the event if he is older than 15min
                     let decoder = JSONDecoder()
@@ -190,41 +254,14 @@ public class ReelevantAnalytics {
         
         /**
             Use this method to trigger an event with the associated payload and labels
-            You should build event with the `Event` enum:
+            You should build event with the `EventBuilder` class:
             ```
-            let event = Event.page_view(labels=[:])
+            let event = EventBuilder.page_view(labels=[:])
             sdk.send(event)
             ```
          */
         public func send (event: Event) {
-            switch event {
-            case .page_view(let labels):
-                self.publishEvent(name: "page_view", payload: convertLabelsToData(labels: labels))
-            case .add_cart(let ids, let labels):
-                let payload = convertLabelsToData(labels: labels)
-                    .merging(["ids": DataValue.array(ids)]) { (current, _) in current }
-                self.publishEvent(name: "add_cart", payload: payload)
-            case .purchase(let ids, let totalAmount, let labels, let transId):
-                let payload = convertLabelsToData(labels: labels)
-                    .merging([
-                        "ids": DataValue.array(ids),
-                        "value": DataValue.number(totalAmount),
-                        "transId": DataValue.string(transId)
-                    ]) { (current, _) in current }
-                self.publishEvent(name: "purchase", payload: payload)
-            case .product_page(let id, let labels):
-                fallthrough
-            case .category_view(let id, let labels):
-                fallthrough
-            case .brand_view(let id, let labels):
-                fallthrough
-            case .product_hover(let id, let labels):
-                let payload = convertLabelsToData(labels: labels)
-                    .merging(["ids": DataValue.array([id])]) { (current, _) in current }
-                self.publishEvent(name: event.caseName, payload: payload)
-            case .custom(let name, let labels):
-                self.publishEvent(name: name, payload: convertLabelsToData(labels: labels))
-            }
+            self.publishEvent(name: event.name, payload: event.payload)
         }
         
         /**
@@ -232,9 +269,9 @@ public class ReelevantAnalytics {
          */
         public func setUser (userId: String) {
             let defaults = UserDefaults.standard
-            let currentValue = defaults.string(forKey: ConfigurationKeys.userId.rawValue)
+            let currentValue = defaults.string(forKey: ReelevantAnalytics.UserIdConfigurationKey)
             if currentValue != userId {
-                defaults.set(userId, forKey: ConfigurationKeys.userId.rawValue)
+                defaults.set(userId, forKey: ReelevantAnalytics.UserIdConfigurationKey)
                 self.publishEvent(name: "identify", payload: [String: DataValue]())
             }
         }
@@ -259,7 +296,7 @@ public class ReelevantAnalytics {
          */
         private func getFailQueue () -> Array<Data> {
             let defaults = UserDefaults.standard
-            return (defaults.array(forKey: ConfigurationKeys.queue.rawValue) as? Array<Data>) ?? []
+            return (defaults.array(forKey: ReelevantAnalytics.FailQueueConfigurationKey) as? Array<Data>) ?? []
         }
         
         /**
@@ -269,7 +306,7 @@ public class ReelevantAnalytics {
             let defaults = UserDefaults.standard
             var currentQueue = self.getFailQueue()
             currentQueue.append(data)
-            defaults.set(currentQueue, forKey: ConfigurationKeys.queue.rawValue)
+            defaults.set(currentQueue, forKey: ReelevantAnalytics.FailQueueConfigurationKey)
         }
 
         /**
@@ -322,8 +359,8 @@ public class ReelevantAnalytics {
                 key: self.configuration.companyId,
                 name: name,
                 url: self.configuration.currentUrl ?? "unknown",
-                tmpId: defaults.string(forKey: ConfigurationKeys.tmpId.rawValue)!,
-                clientId: defaults.string(forKey: ConfigurationKeys.userId.rawValue),
+                tmpId: defaults.string(forKey: ReelevantAnalytics.TemporaryUserIdConfigurationKey)!,
+                clientId: defaults.string(forKey: ReelevantAnalytics.UserIdConfigurationKey),
                 data: payload,
                 eventId: self.randomIdentifier()
             )

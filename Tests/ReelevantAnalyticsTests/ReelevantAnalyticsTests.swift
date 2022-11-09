@@ -16,9 +16,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        ReelevantAnalytics.ConfigurationKeys.allCases.forEach { key in
-            UserDefaults.standard.removeObject(forKey: key.rawValue)
-        }
+        ReelevantAnalytics.clearStorage()
     }
 
     func testSendPageViewAndProductPage() throws {
@@ -26,7 +24,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
         let config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
         config.endpoint = "http://localhost:9080/receive"
         let sdk = ReelevantAnalytics.SDK(configuration: config)
-        let event = ReelevantAnalytics.Event.page_view(labels: [:])
+        let event = ReelevantAnalytics.EventBuilder.page_view(labels: [:])
         
         // Create a local HTTP server to receive events
         let server = HttpServer()
@@ -69,7 +67,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
         
         exp = expectation(description: "Receiving a second request")
         // Wait for a request and then assert
-        let secondEvent = ReelevantAnalytics.Event.product_page(productId: "my-product-id", labels: ["lang": "en_US"])
+        let secondEvent = ReelevantAnalytics.EventBuilder.product_page(productId: "my-product-id", labels: ["lang": "en_US"])
         sdk.setCurrentURL(url: "https://reelevant.com/my-product-id")
         sdk.send(event: secondEvent)
         waitForExpectations(timeout: 3)
@@ -82,8 +80,8 @@ final class ReelevantAnalyticsTests: XCTestCase {
         XCTAssertEqual(receivedEvent.url, "https://reelevant.com/my-product-id")
         XCTAssertEqual(receivedEvent.v, 1)
         XCTAssertEqual(receivedEvent.data, [
-            "lang": ReelevantAnalytics.DataValue.string("en_US"),
-            "ids": ReelevantAnalytics.DataValue.array(["my-product-id"])
+            "lang": ReelevantAnalytics.DataValue.init(string: "en_US"),
+            "ids": ReelevantAnalytics.DataValue.init(array: ["my-product-id"])
         ])
         XCTAssertEqual(receivedEvent.clientId, "my-user")
         XCTAssertEqual(receivedEvent.tmpId, userTmpId)
@@ -99,7 +97,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
         config.endpoint = "http://localhost:9080/receive"
         config.retry = 1 // retry after 1s
         let sdk = ReelevantAnalytics.SDK(configuration: config)
-        let event = ReelevantAnalytics.Event.page_view(labels: [:])
+        let event = ReelevantAnalytics.EventBuilder.page_view(labels: [:])
         
         // Create a local HTTP server to receive events
         let server = HttpServer()
