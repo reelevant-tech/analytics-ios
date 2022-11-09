@@ -11,12 +11,15 @@ import UIKit
 #endif
 import OSLog
 
-public class ReelevantAnalytics {
+@available(macOS 10.12, iOS 10.0, *)
+@objc
+public class ReelevantAnalytics: NSObject {
     
     /**
         Used to build `Event` which could be used in `send()` method
      */
     @objc
+    @objcMembers
     public class EventBuilder: NSObject {
         public static func page_view(labels: Dictionary<String, String>) -> Event {
             return Event.init(name: "page_view", payload: convertLabelsToData(labels: labels))
@@ -71,6 +74,7 @@ public class ReelevantAnalytics {
         Event built from the `EventBuilder`
      */
     @objc
+    @objcMembers
     public class Event: NSObject {
         let name: String
         let payload: Dictionary<String, DataValue>
@@ -85,6 +89,7 @@ public class ReelevantAnalytics {
         Configuration for the SDK
      */
     @objc
+    @objcMembers
     public class Configuration: NSObject {
         public init (companyId: String, datasourceId: String) {
             self.companyId = companyId
@@ -117,7 +122,6 @@ public class ReelevantAnalytics {
     /**
         Custom class to be able to define array of string / string (optional) or number for `data` property
      */
-    @objc
     public class DataValue: NSObject, Codable {
         private var arrayValue: Array<String>? = nil
         private var stringValue: String? = nil
@@ -184,9 +188,8 @@ public class ReelevantAnalytics {
 
     /**
         Sent event schema
-        note: it could be a struct but since we need Objective-C interoperability
+        note: it could be a struct but we need Objective-C interoperability
      */
-    @objc
     public class BuiltEvent: NSObject, Codable {
         let key: String
         let name: String
@@ -219,7 +222,7 @@ public class ReelevantAnalytics {
         }
     }
 
-    @available(macOS 10.12, iOS 10.0, *)
+    @objc
     @objcMembers
     public class SDK: NSObject {
         private var configuration: Configuration
