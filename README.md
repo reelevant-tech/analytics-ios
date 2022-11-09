@@ -31,3 +31,33 @@ Each event type allow you to pass additional infos via `labels` (`Dictionary<Str
 ```swift
 let event = ReelevantAnalytics.Event.add_cart(ids: ["my-product-id"], labels: ["lang": "en_US"])
 ```
+
+### Objective-C
+
+The package is also compatible with objective-c apps:
+
+```objective-c
+#import "ViewController.h"
+@import ReelevantAnalytics;
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+- (IBAction)myAction:(id)sender {
+    Configuration *config = [[Configuration alloc] initWithCompanyId:@"foo" datasourceId:@"bar"];
+    SDK *sdk = [[SDK alloc] initWithConfiguration:config];
+    
+    Event *event = [EventBuilder page_viewWithLabels:[[NSMutableDictionary alloc] init]];
+    
+    [sdk sendWithEvent:event];
+}
+
+@end
+```
