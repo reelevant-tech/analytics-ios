@@ -23,7 +23,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
 
     func testSendPageViewAndProductPage() throws {
         // Init the SDK
-        var config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
+        let config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
         config.endpoint = "http://localhost:9080/receive"
         let sdk = ReelevantAnalytics.SDK(configuration: config)
         let event = ReelevantAnalytics.Event.page_view(labels: [:])
@@ -95,7 +95,7 @@ final class ReelevantAnalyticsTests: XCTestCase {
     
     func testRetry() throws {
         // Init the SDK
-        var config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
+        let config = ReelevantAnalytics.Configuration(companyId: "foo", datasourceId: "bar")
         config.endpoint = "http://localhost:9080/receive"
         config.retry = 1 // retry after 1s
         let sdk = ReelevantAnalytics.SDK(configuration: config)

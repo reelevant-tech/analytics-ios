@@ -11,7 +11,7 @@ import UIKit
 #endif
 import OSLog
 
-public struct ReelevantAnalytics {
+public class ReelevantAnalytics {
     /**
         Defined events
      */
@@ -34,7 +34,7 @@ public struct ReelevantAnalytics {
     /**
         Configuration for the SDK
      */
-    public struct Configuration {
+    public class Configuration {
         public init (companyId: String, datasourceId: String) {
             self.companyId = companyId
             self.datasourceId = datasourceId
@@ -109,8 +109,9 @@ public struct ReelevantAnalytics {
 
     /**
         Sent event schema
+        note: it could be a struct but since we need Objective-C interoperability
      */
-    public struct BuiltEvent: Codable {
+    public class BuiltEvent: Codable {
         let key: String
         let name: String
         let url: String
@@ -120,6 +121,26 @@ public struct ReelevantAnalytics {
         let eventId: String
         let v: Int
         let timestamp: Int64
+        
+        public init(
+            key: String,
+            name: String,
+            url: String,
+            tmpId: String,
+            clientId: String?,
+            data: Dictionary<String, DataValue>,
+            eventId: String
+        ) {
+            self.key = key
+            self.name = name
+            self.url = url
+            self.tmpId = tmpId
+            self.clientId = clientId
+            self.data = data
+            self.eventId = eventId
+            self.v = 1
+            self.timestamp = Int64(Date().timeIntervalSince1970 * 1000)
+        }
     }
 
     @available(macOS 10.12, iOS 10.0, *)
@@ -304,9 +325,7 @@ public struct ReelevantAnalytics {
                 tmpId: defaults.string(forKey: ConfigurationKeys.tmpId.rawValue)!,
                 clientId: defaults.string(forKey: ConfigurationKeys.userId.rawValue),
                 data: payload,
-                eventId: self.randomIdentifier(),
-                v: 1,
-                timestamp: Int64(Date().timeIntervalSince1970 * 1000)
+                eventId: self.randomIdentifier()
             )
             return event
         }
