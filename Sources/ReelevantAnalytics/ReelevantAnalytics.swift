@@ -50,19 +50,19 @@ public class ReelevantAnalytics: NSObject {
         public static func category_view(categoryId: String, labels: Dictionary<String, String>) -> Event {
             let payload = convertLabelsToData(labels: labels)
                 .merging(["ids": DataValue.init(array: [categoryId])]) { (current, _) in current }
-            return Event.init(name: "product_page", payload: payload)
+            return Event.init(name: "category_view", payload: payload)
         }
         
         public static func brand_view(brandId: String, labels: Dictionary<String, String>) -> Event {
             let payload = convertLabelsToData(labels: labels)
                 .merging(["ids": DataValue.init(array: [brandId])]) { (current, _) in current }
-            return Event.init(name: "product_page", payload: payload)
+            return Event.init(name: "brand_view", payload: payload)
         }
         
         public static func product_hover(productId: String, labels: Dictionary<String, String>) -> Event {
             let payload = convertLabelsToData(labels: labels)
                 .merging(["ids": DataValue.init(array: [productId])]) { (current, _) in current }
-            return Event.init(name: "product_page", payload: payload)
+            return Event.init(name: "product_hover", payload: payload)
         }
         
         public static func custom(name: String, labels: Dictionary<String, String>) -> Event {
